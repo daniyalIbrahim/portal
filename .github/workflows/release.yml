@@ -31,5 +31,5 @@ jobs:
           release_name: Release ${{ env.TAG }}
           body: |
             This is the release notes for version ${{ env.TAG }}
-          draft: false
-          prerelease: false
+          draft: true
+          #prerelease: false
