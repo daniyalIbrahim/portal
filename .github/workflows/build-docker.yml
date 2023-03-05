@@ -1,0 +1,36 @@
+name: Build and Push Docker Image
+
+on:
+  #push:
+  #  branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: 'read'
+
+env:
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  APP_NAME: "portal"
+  TAG: "v0.0.1"
+
+jobs:
+
+  build-and-push-github-package:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Log in to GitHub Packages
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN_GH }}
+
+      - name: Build and Push Docker Image
+        run: |
+         docker build . --tag ghcr.io/daniyalibrahim/${{ env.APP_NAME }}:${{ env.TAG }}
+         docker push ghcr.io/daniyalibrahim/${{ env.APP_NAME }}:${{ env.TAG }}

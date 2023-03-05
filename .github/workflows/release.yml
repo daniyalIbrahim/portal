@@ -1,0 +1,35 @@
+name: Build and Push Docker Image
+
+on:
+  #push:
+  #  branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: 'read'
+
+env:
+  APP_NAME: "portal"
+  TAG: "v0.0.1"
+
+jobs:
+
+  build-and-push-github-package:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG }}
+          release_name: Release ${{ env.TAG }}
+          body: |
+            This is the release notes for version ${{ env.TAG }}
+          draft: false
+          prerelease: false
