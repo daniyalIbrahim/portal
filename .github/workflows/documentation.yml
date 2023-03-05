@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Docs
         run: |
-          mkdocs build --clean
+          mkdocs build --clean 
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
