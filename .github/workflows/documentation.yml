@@ -32,9 +32,20 @@ jobs:
         with:
           key: ${{ github.ref }}
           path: .cache
+ 
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material
+          pip install mkdocs-material-extensions
+          pip install mkdocs-minify-plugin
 
-      - name: install dependencies
-          run: pip install mkdocs-material
+      - name: Build Docs
+        run: |
+          mkdocs build --clean
 
-      - name: install dependencies
-          run: mkdocs gh-deploy --force
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
