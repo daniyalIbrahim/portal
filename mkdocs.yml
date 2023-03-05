@@ -1,6 +1,5 @@
+site_name: Portal
 
-site:
-  name: portal
-  
+
 theme:
   name: material
