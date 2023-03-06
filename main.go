@@ -1,17 +1,30 @@
 package main
 
 import (
+	"context"
 	"embed"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/menu"
+	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
+	ctx := context.Background()
+	AppMenu := menu.NewMenu()
+    FileMenu := AppMenu.AddSubmenu("File")
+    //FileMenu.AddText("&Open", keys.CmdOrCtrl("o"), )
+    FileMenu.AddSeparator()
+    FileMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
+        runtime.Quit(ctx)
+    })
 	// Create an instance of the app structure
 	app := NewApp()
 
