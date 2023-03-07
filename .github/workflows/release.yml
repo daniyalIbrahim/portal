@@ -15,10 +15,10 @@ env:
 jobs:
 
   build-releases:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [windows, linux]
+        os: [windows, linux, macos]
         arch: [amd64]
 
     steps:
@@ -29,14 +29,6 @@ jobs:
 
       - name: Fetch Tags
         run: git fetch --force --tags
-
-      - name: Setup paths and env 
-        run: |
-          mkdir -p $HOME/.local/bin
-          mkdir -p $HOME/.local/lib/pkgconfig
-          echo "PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
           
       - name: Setup Golang
         uses: actions/setup-go@v3
@@ -60,41 +52,16 @@ jobs:
       - name: Build binaries
         if: matrix.os != 'windows'
         run: |
-          wails doctor
           env GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} wails build
           #mv .${GITHUB_WORKSPACE}/build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }} ./build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }}-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Create nsis installer
-        if: matrix.os == 'windows'
-        run: |
-          sudo apt-get install nsis -yq && \
-          env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
-          # env GOOS="windows" GOARCH="amd64" wails build -nsis 
+        if: matrix.os == 'windows-latest'
+        run: | 
+          #env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
+          env GOOS="windows" GOARCH="amd64" wails build -nsis 
           
-#       - name: Bump version and Generate Changelog
-#         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-#         run: |
-#           git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-#           git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-#           npx standard-version -no-verify
-#           git remote rm origin
-#           git remote add origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
-#           git push --follow-tags origin HEAD:master
-#         env:
-#           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-#           GITHUB_ACTOR: ${{github.actor}}
-#           GITHUB_REPOSITORY: ${{github.repository}}
-          
-#       - name: Run GoReleaser
-#         uses: goreleaser/goreleaser-action@v4
-#         with:
-#           version: latest
-#           args: release --rm-dist
-#           #--release-notes CHANGELOG.md
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Release 
+      - name: Create Release
         uses: goreleaser/goreleaser-action@v4
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro':
@@ -103,15 +70,3 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
-          body: |
-            This is the release notes for version ${{ env.TAG }}
-          draft: false
-          #prerelease: false
