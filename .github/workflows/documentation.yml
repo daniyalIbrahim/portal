@@ -1,9 +1,10 @@
 name: documentation
 on:
-  push:
-    branches:
-      - master
-
+  #push:
+  #  branches:
+  #    - master
+  workflow_dispatch:
+  
 env:
   PYTHON_VERSION: 3.x
 
