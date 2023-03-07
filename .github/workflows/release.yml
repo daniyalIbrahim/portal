@@ -57,8 +57,8 @@ jobs:
 
       - name: Create nsis installer
         run: | 
-          #env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
-          env GOOS="windows" GOARCH="amd64" wails build -nsis 
+          env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
+          #env GOOS="windows" GOARCH="amd64" wails build -nsis 
           
       - name: Create Release
         uses: goreleaser/goreleaser-action@v4
