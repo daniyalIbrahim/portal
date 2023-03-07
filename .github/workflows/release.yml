@@ -55,15 +55,9 @@ jobs:
         run: |
             sudo apt-get update -yq && \
             sudo apt-get install -yq nsis pkg-config libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev libgtk-3-dev software-properties-common build-essential wget && \
-            go install github.com/wailsapp/wails/v2/cmd/wails@latest && \
-            wget https://download.visualstudio.microsoft.com/download/pr/7c62b503-4ede-4ff2-bc38-50f250a86d89/3b5e9db04cbe0169e852cb050a0dffce/dotnet-sdk-6.0.300-linux-amd64.tar.gz && \
-            wget https://download.visualstudio.microsoft.com/download/pr/8ba7087e-4513-41e5-8359-a4bcd2a3661f/e6828f0d8cf1ecc63074c9ff57685e27/aspnetcore-runtime-6.0.5-linux-amd64.tar.gz && \
-            tar zxf dotnet-sdk-6.0.300-linux-amd64.tar.gz -C $HOME/dotnet-amd64 && \
-            tar zxf aspnetcore-runtime-6.0.5-linux-amd64.tar.gz -C $HOME/dotnet-amd64 && \
-            export DOTNET_ROOT=$HOME/dotnet-amd64 && \
-            export PATH=$PATH:$HOME/dotnet-amd64
+            go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Build binaries for ${{ env.APP_NAME }}
+      - name: Build binaries
         if: matrix.os != 'windows'
         run: |
           wails doctor
