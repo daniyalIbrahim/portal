@@ -71,38 +71,38 @@ jobs:
           env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
           # env GOOS="windows" GOARCH="amd64" wails build -nsis 
           
-      - name: Bump version and Generate Changelog
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: |
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-          npx standard-version -no-verify
-          git remote rm origin
-          git remote add origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
-          git push --follow-tags origin HEAD:master
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          GITHUB_ACTOR: ${{github.actor}}
-          GITHUB_REPOSITORY: ${{github.repository}}
+#       - name: Bump version and Generate Changelog
+#         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+#         run: |
+#           git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+#           git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+#           npx standard-version -no-verify
+#           git remote rm origin
+#           git remote add origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+#           git push --follow-tags origin HEAD:master
+#         env:
+#           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+#           GITHUB_ACTOR: ${{github.actor}}
+#           GITHUB_REPOSITORY: ${{github.repository}}
           
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          version: latest
-          args: release --rm-dist
-          #--release-notes CHANGELOG.md
+#       - name: Run GoReleaser
+#         uses: goreleaser/goreleaser-action@v4
+#         with:
+#           version: latest
+#           args: release --rm-dist
+#           #--release-notes CHANGELOG.md
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ env.TAG }}
-      #     release_name: Release ${{ env.TAG }}
-      #     body: |
-      #       This is the release notes for version ${{ env.TAG }}
-      #     draft: true
-      #     #prerelease: false
+        with:
+          tag_name: ${{ env.TAG }}
+          release_name: Release ${{ env.TAG }}
+          body: |
+            This is the release notes for version ${{ env.TAG }}
+          draft: false
+          #prerelease: false
