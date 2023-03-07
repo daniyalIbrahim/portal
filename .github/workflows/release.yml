@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [linux]
+        os: [ubuntu]
         arch: [amd64]
 
     steps:
