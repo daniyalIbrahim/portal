@@ -62,7 +62,7 @@ jobs:
         run: |
           wails doctor
           env GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} wails build
-          mv ./build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }} ./build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }}-${{ matrix.os }}-${{ matrix.arch }}
+          mv .${GITHUB_WORKSPACE}/build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }} ./build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }}-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Create nsis installer
         if: matrix.os == 'windows'
