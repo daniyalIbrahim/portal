@@ -56,7 +56,6 @@ jobs:
           #mv .${GITHUB_WORKSPACE}/build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }} ./build/${{ matrix.os }}/${{ matrix.arch }}/${{ env.APP_NAME }}-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Create nsis installer
-        if: matrix.os == 'windows-latest'
         run: | 
           #env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_CXXFLAGS="-IC:\msys64\mingw64\include" wails build -nsis -ldflags '-extldflags "-static"' -skipbindings
           env GOOS="windows" GOARCH="amd64" wails build -nsis 
