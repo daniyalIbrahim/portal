@@ -28,9 +28,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create Tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.TAG }}',
+              sha: context.sha
+            })
+
       - name: Fetch Tags
         run: git fetch --force --tags
-          
+
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:
@@ -65,4 +76,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_CURRENT_TAG: ${{ env.TAG }}
+          GORELEASER_PREVIOUS_TAG: ${{ env.TAG }}
