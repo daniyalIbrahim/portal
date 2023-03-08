@@ -19,8 +19,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu]
-        build-os: [windows,linux]
-        arch: [amd64]
+        # build-os: [windows,linux]
+        # arch: [amd64]
 
     steps:
       - name: Checkout Repository
@@ -50,21 +50,10 @@ jobs:
             sudo apt-get install -yq nsis pkg-config libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev libgtk-3-dev software-properties-common build-essential wget && \
             go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Build Wails for ${{ matrix.build-os }} ${{ matrix.arch }}
-        if: ${{ matrix.build-os }} != "windows"
+      - name: Build Wails 
         run: |
-          wails build -f -platform ${{ matrix.build-os }}/${{ matrix.arch }} -clean -o ${{ env.APP_NAME }}-${{ matrix.build-os }}-${{ matrix.arch }}.exe 
-        env:
-          GOOS: ${{ matrix.build-os }}
-          GOARCH: ${{ matrix.arch }}
-
-      - name: Build Wails for ${{ matrix.build-os }} ${{ matrix.arch }}
-        if: ${{ matrix.build-os }} == "windows"
-        run: |
-          wails build -f -nsis -platform ${{ matrix.build-os }}/${{ matrix.arch }} -clean -o ${{ env.APP_NAME }}-${{ matrix.build-os }}-${{ matrix.arch }}.exe
-        env:
-          GOOS: ${{ matrix.build-os }}
-          GOARCH: ${{ matrix.arch }}
+          GOOS=linux GOARCH=amd64 wails build -f -platform linux/amd64 -clean -o ${{ env.APP_NAME }}-linux-amd64.exe
+          GOOS=windows GOARCH=amd64 wails build -f -nsis -platform windows/amd64 -clean -o ${{ env.APP_NAME }}-windows-amd64.exe
 
       - name: Create Release
         id: create_release
@@ -83,5 +72,11 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.APP_NAME }} 
-          path: ./${{ env.APP_NAME }}-${{ matrix.build-os }}-${{ matrix.arch }}.exe
+          name: ${{ env.APP_NAME }}-linux-amd64.exe
+          path: ./build/bin/${{ env.APP_NAME }}-linux-amd64.exe
+
+      - name: Upload Artifact Windows
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.APP_NAME }}-windows-amd64.exe
+          path: ./build/bin/${{ env.APP_NAME }}-windows-amd64.exe
