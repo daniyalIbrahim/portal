@@ -10,7 +10,7 @@ permissions:
 
 env:
   APP_NAME: "portal"
-  TAG: "v0.0.1"
+  TAG: "v0.0.2"
 
 jobs:
 
@@ -34,7 +34,7 @@ jobs:
         with:
           tag: ${{ env.TAG }}
           tag_exists_error: false
-          force_push_tag: true 
+          force_push_tag: false 
           message: "Latest release"
 
       - name: Fetch Tags
