@@ -60,7 +60,7 @@ jobs:
             go install github.com/wailsapp/wails/v2/cmd/wails@latest
           
       - name: Create Release
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v1.16.0
         with:
           distribution: goreleaser
           version: latest
