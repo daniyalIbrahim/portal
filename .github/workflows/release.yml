@@ -43,7 +43,7 @@ jobs:
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.20.1'
+          go-version: '>=1.18.0'
           cache: true
           
       - name: Setup Nodejs v18
@@ -67,4 +67,4 @@ jobs:
           args: release --clean --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_PREVIOUS_TAG: ${{ env.TAG }}
+          TAG: ${{ env.TAG }}
